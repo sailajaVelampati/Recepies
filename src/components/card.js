@@ -23,6 +23,7 @@ const ingrediaent = (data) => {
   labelCancelLoops: while (true) {
     x++;
     if (!data[`strIngredient${x}`]) {
+      // eslint-disable-next-line
       break labelCancelLoops;
     }
     IngeredientsList.push(

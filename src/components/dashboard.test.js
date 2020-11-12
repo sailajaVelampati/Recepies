@@ -12,6 +12,4 @@ describe("App ", () => {
     expect(getByTestId("searchInput")).toBeDefined();
     expect(getByTestId("mediaLoading")).toBeDefined();
   });
-
-  xit("render card with data when search field is filled with data", async () => {});
 });
