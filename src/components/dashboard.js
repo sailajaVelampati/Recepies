@@ -15,10 +15,11 @@ const Dashboard = () => {
   }, []);
 
   const randomReceipe = (result) => {
-    result.meals ? setSearchInput(result.meals[0]) : setSearchInput(null);
+    result.meals.length ? setSearchInput(result.meals[0]) : notFound(true);
   };
 
   const searchData = (value) => {
+    console.log(value);
     if (value) {
       setSearchInput(null);
       setReceipeNotFound(false);
@@ -37,6 +38,7 @@ const Dashboard = () => {
   };
 
   const searchRecepie = (result) => {
+    console.log(result);
     result.meals ? setSearchInput(result.meals[0]) : notFound(true);
   };
 

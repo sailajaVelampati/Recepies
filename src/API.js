@@ -1,5 +1,5 @@
-const fetchData = async (url, successCallback) => {
-  fetch(url)
+const fetchData = (url, successCallback) => {
+  return fetch(url)
     .then((res) => res.json())
     .then(
       (result) => {
@@ -9,6 +9,9 @@ const fetchData = async (url, successCallback) => {
         console.log(error);
       }
     );
+  // .catch((error) => {
+  //   console.log(error);
+  // });
 };
 
 export default fetchData;

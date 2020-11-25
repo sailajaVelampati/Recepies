@@ -3,6 +3,12 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import "@testing-library/jest-dom";
-import fetchMock from "jest-fetch-mock";
+//import fetchMock from "jest-fetch-mock";
+global.fetch = jest.fn();
+//fetchMock.enableMocks();
+import React from "react";
 
-fetchMock.enableMocks();
+import { configure } from "enzyme";
+import Adapter from "enzyme-adapter-react-16";
+
+configure({ adapter: new Adapter() });

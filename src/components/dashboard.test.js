@@ -1,15 +1,130 @@
 import React from "react";
 import Dashboard from "./dashboard";
 import ReactDOM from "react-dom";
-import { render, screen, act } from "@testing-library/react";
+import {
+  render,
+  screen,
+  act,
+  waitFor,
+  fireEvent,
+} from "@testing-library/react";
 import { randomMockWithOutVideo, randomMockWithVideo } from "./API.mock";
-import fetchData from "../API";
+global.fetch = jest.fn();
+let container;
 
-//import "jest-dom/extent-expect";
-describe("App ", () => {
-  it("renders search input and media", () => {
-    const { getByTestId } = render(<Dashboard />);
-    expect(getByTestId("searchInput")).toBeDefined();
-    expect(getByTestId("mediaLoading")).toBeDefined();
+describe("Card ", () => {
+  let container = null;
+  beforeEach(() => {
+    // setup a DOM element as a render target
+    container = document.createElement("div");
+    document.body.appendChild(container);
+  });
+
+  afterEach(() => {
+    // cleanup on exiting
+    ReactDOM.unmountComponentAtNode(container);
+    container.remove();
+    container = null;
+  });
+  test("Should renders data when API request is called with meals data", async () => {
+    jest.spyOn(global, "fetch").mockResolvedValue({
+      json: jest.fn().mockResolvedValue({ meals: [randomMockWithVideo] }),
+    });
+    await act(async () => {
+      render(<Dashboard />, container);
+    });
+
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(global.fetch).toHaveBeenCalledWith(
+      `https://www.themealdb.com/api/json/v1/1/random.php`
+    );
+
+    expect(document.querySelector("[data-testid=title]").innerHTML).toBe(
+      randomMockWithVideo.strMeal
+    );
+    global.fetch.mockRestore();
+  });
+  //negative test case
+  test("Should renders data when API request is called with zero meals data", async () => {
+    jest.spyOn(global, "fetch").mockResolvedValue({
+      json: jest.fn().mockResolvedValue({ meals: [] }),
+    });
+    await act(async () => {
+      render(<Dashboard />, container);
+    });
+
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(global.fetch).toHaveBeenCalledWith(
+      `https://www.themealdb.com/api/json/v1/1/random.php`
+    );
+    expect(document.querySelector("[data-testid=alert]").textContent).toBe(
+      "Receipe not found!"
+    );
+    global.fetch.mockRestore();
+  });
+
+  test("Should renders data when user makes a valid text to search field", async () => {
+    jest.spyOn(global, "fetch").mockResolvedValue({
+      json: jest.fn().mockResolvedValue({ meals: randomMockWithVideo }),
+    });
+    await act(async () => {
+      render(<Dashboard />, container);
+    });
+
+    const searchField = document
+      .querySelector("[data-testid=searchInput]")
+      .querySelector("input");
+
+    await act(async () => {
+      fireEvent.change(searchField, { target: { value: "Bread" } });
+      fireEvent.blur(searchField);
+    });
+
+    console.log(document.querySelector("[data-testid=title]"));
+
+    // expect(document.querySelector("[data-testid=title]").innerHTML).toBe(
+    //   randomMockWithVideo.strMeal
+    // );
+    global.fetch.mockRestore();
+  });
+  //negative test case for invalid search input
+  test("Should alert when user makes a invalid text to search field", async () => {
+    jest.spyOn(global, "fetch").mockResolvedValue({
+      json: jest.fn().mockResolvedValue({ meals: [] }),
+    });
+    await act(async () => {
+      render(<Dashboard />, container);
+    });
+
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(global.fetch).toHaveBeenCalledWith(
+      `https://www.themealdb.com/api/json/v1/1/random.php`
+    );
+    const searchField = document
+      .querySelector("[data-testid=searchInput]")
+      .querySelector("input");
+
+    await act(async () => {
+      fireEvent.change(searchField, { target: { value: "" } });
+      fireEvent.blur(searchField);
+    });
+    console.log(searchField);
+
+    expect(document.querySelector("[data-testid=alert]").textContent).toBe(
+      "Receipe not found!"
+    );
+    global.fetch.mockRestore();
+  });
+  // negative test case for API error
+  test("Should log error when Service is rejected", async () => {
+    const error = new Error("Async error");
+    jest.spyOn(global, "fetch").mockResolvedValue({
+      json: jest.fn().mockRejectedValueOnce(error),
+    });
+    console.log = jest.fn();
+    await act(async () => {
+      render(<Dashboard />, container);
+    });
+    expect(console.log).toHaveBeenCalledWith(error);
   });
 });

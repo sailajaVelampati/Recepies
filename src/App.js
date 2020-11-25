@@ -1,9 +1,10 @@
 import React from "react";
 import "./App.css";
 import Dashboard from "./components/dashboard";
+
 const App = () => {
   return (
-    <div data-testid="App" className="App">
+    <div data-testid="mainApp" className="App">
       <Dashboard />
     </div>
   );
