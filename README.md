@@ -44,4 +44,4 @@ User can type available receipe name.
 User can type unavailable receipe name.
 
 > Onblur of input field an API call is made which fetches empty data.
-> An alert with error message "Receipe not found!"
+> An alert with error message "Recipe not found!"

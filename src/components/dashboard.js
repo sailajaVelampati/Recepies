@@ -3,15 +3,18 @@ import TextField from "@material-ui/core/TextField";
 import Media from "./card";
 import Alert from "@material-ui/lab/Alert";
 import fetchData from "../API";
+import {
+  randomRecipeAPI,
+  searchRecipeAPI,
+  recipeNotFoundText,
+} from "./API.mock";
 const Dashboard = () => {
   const [searchInput, setSearchInput] = useState(null);
   const [receipeNotFound, setReceipeNotFound] = useState(false);
 
   useEffect(() => {
-    fetchData(
-      `https://www.themealdb.com/api/json/v1/1/random.php`,
-      randomReceipe
-    );
+    fetchData(randomRecipeAPI, randomReceipe);
+    // eslint-disable-next-line
   }, []);
 
   const randomReceipe = (result) => {
@@ -19,14 +22,10 @@ const Dashboard = () => {
   };
 
   const searchData = (value) => {
-    console.log(value);
     if (value) {
       setSearchInput(null);
       setReceipeNotFound(false);
-      fetchData(
-        `https://www.themealdb.com/api/json/v1/1/search.php?s=${value}`,
-        searchRecepie
-      );
+      fetchData(searchRecipeAPI(value), searchRecepie);
     } else {
       setSearchInput(null);
     }
@@ -38,7 +37,6 @@ const Dashboard = () => {
   };
 
   const searchRecepie = (result) => {
-    console.log(result);
     result.meals ? setSearchInput(result.meals[0]) : notFound(true);
   };
 
@@ -47,12 +45,12 @@ const Dashboard = () => {
       <TextField
         data-testid="searchInput"
         id="standard-basic"
-        label="Search"
+        label="Enter Recipe"
         onBlur={(event) => searchData(event.currentTarget.value)}
       />
       {receipeNotFound ? (
         <Alert data-testid="alert" severity="error">
-          Receipe not found!
+          {recipeNotFoundText}
         </Alert>
       ) : null}
       {Boolean(searchInput) ? (

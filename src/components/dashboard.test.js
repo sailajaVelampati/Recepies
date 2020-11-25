@@ -8,7 +8,11 @@ import {
   waitFor,
   fireEvent,
 } from "@testing-library/react";
-import { randomMockWithOutVideo, randomMockWithVideo } from "./API.mock";
+import {
+  randomMockWithVideo,
+  recipeNotFoundText,
+  randomRecipeAPI,
+} from "./API.mock";
 global.fetch = jest.fn();
 let container;
 
@@ -35,9 +39,7 @@ describe("Card ", () => {
     });
 
     expect(global.fetch).toHaveBeenCalledTimes(1);
-    expect(global.fetch).toHaveBeenCalledWith(
-      `https://www.themealdb.com/api/json/v1/1/random.php`
-    );
+    expect(global.fetch).toHaveBeenCalledWith(randomRecipeAPI);
 
     expect(document.querySelector("[data-testid=title]").innerHTML).toBe(
       randomMockWithVideo.strMeal
@@ -54,11 +56,9 @@ describe("Card ", () => {
     });
 
     expect(global.fetch).toHaveBeenCalledTimes(1);
-    expect(global.fetch).toHaveBeenCalledWith(
-      `https://www.themealdb.com/api/json/v1/1/random.php`
-    );
+    expect(global.fetch).toHaveBeenCalledWith(randomRecipeAPI);
     expect(document.querySelector("[data-testid=alert]").textContent).toBe(
-      "Receipe not found!"
+      recipeNotFoundText
     );
     global.fetch.mockRestore();
   });
@@ -80,7 +80,7 @@ describe("Card ", () => {
       fireEvent.blur(searchField);
     });
 
-    console.log(document.querySelector("[data-testid=title]"));
+    // console.log(document.querySelector("[data-testid=title]"));
 
     // expect(document.querySelector("[data-testid=title]").innerHTML).toBe(
     //   randomMockWithVideo.strMeal
@@ -97,9 +97,7 @@ describe("Card ", () => {
     });
 
     expect(global.fetch).toHaveBeenCalledTimes(1);
-    expect(global.fetch).toHaveBeenCalledWith(
-      `https://www.themealdb.com/api/json/v1/1/random.php`
-    );
+    expect(global.fetch).toHaveBeenCalledWith(randomRecipeAPI);
     const searchField = document
       .querySelector("[data-testid=searchInput]")
       .querySelector("input");
@@ -108,10 +106,9 @@ describe("Card ", () => {
       fireEvent.change(searchField, { target: { value: "" } });
       fireEvent.blur(searchField);
     });
-    console.log(searchField);
 
     expect(document.querySelector("[data-testid=alert]").textContent).toBe(
-      "Receipe not found!"
+      recipeNotFoundText
     );
     global.fetch.mockRestore();
   });
@@ -126,5 +123,6 @@ describe("Card ", () => {
       render(<Dashboard />, container);
     });
     expect(console.log).toHaveBeenCalledWith(error);
+    global.fetch.mockRestore();
   });
 });

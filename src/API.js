@@ -9,9 +9,6 @@ const fetchData = (url, successCallback) => {
         console.log(error);
       }
     );
-  // .catch((error) => {
-  //   console.log(error);
-  // });
 };
 
 export default fetchData;

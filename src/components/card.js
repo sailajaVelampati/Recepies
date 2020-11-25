@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2),
   },
   media: {
-    height: 390,
+    height: 490,
   },
 }));
 const ingrediaent = (data) => {
@@ -116,17 +116,30 @@ function Media(props) {
             <Typography variant="h6" display="block" gutterBottom align="left">
               Ingredients
             </Typography>
-            <Typography variant="body1" gutterBottom align="left">
+            <ul>
               {ingrediaent(data).map((i, index) => (
-                <li key={index}>{i}</li>
+                <li key={index}>
+                  <Typography variant="body1" gutterBottom align="left">
+                    {i}.
+                  </Typography>
+                </li>
               ))}
-            </Typography>
+            </ul>
             <Typography variant="h6" display="block" gutterBottom align="left">
               Instructions
             </Typography>
-            <Typography variant="body1" gutterBottom align="justify">
-              {data.strInstructions}
-            </Typography>
+            <ol>
+              {data.strInstructions
+                .split(".")
+                .slice(0, -1)
+                .map((step, index) => (
+                  <li key={index}>
+                    <Typography variant="body1" gutterBottom align="justify">
+                      {`${step}.`}
+                    </Typography>
+                  </li>
+                ))}
+            </ol>
           </div>
         )}
       </CardContent>
